@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>模仿 iphone 白点</title>
+	<style>
+		body {height: 100vh; width: 100vw;}
+		#btn, #btn>div{   display: flex; justify-content: center; align-items: center; }
+		#btn { position: fixed; width: 50px; margin: 20px; height: 50px; background-color: rgba(0,0,0,.5); border-radius: 15px;}
+		#btn>div{ width: 35px;height: 35px; background-color: rgba(255,255,255,.5); border-radius: 50%; }
+		#btn>div>div{ width: 25px;height: 25px; background-color: rgba(255,255,255,.8); border-radius: 50%; }
+	</style>
+</head>
+<body>
+	<div id="btn">
+		<div>
+			<div></div>
+		</div>
+	</div>
+	<script>
+		window.onload = () => {
+			drag(document.getElementById('btn'));
+		}
+		function drag (elem) {
+			elem.ontouchstart = event => {
+				const x = event.changedTouches[0].clientX - elem.offsetLeft;
+				const y = event.changedTouches[0].clientY - elem.offsetTop;
+				elem.style.transitionDuration = '0ms'
+
+				document.ontouchmove = event => {
+					var left = event.changedTouches[0].clientX - x;
+					var top = event.changedTouches[0].clientY - y;
+
+					elem.style.left = left - 20 + 'px';
+					elem.style.right = document.body.offsetWidth - left - 40 + 'px';
+					elem.style.top = top - 20 + 'px';
+				}
+
+				document.ontouchend = event => {
+					elem.style.transitionDuration = '300ms'
+					console.log(event.changedTouches[0].clientY,document.body.offsetHeight)
+					if (event.changedTouches[0].clientY >= document.body.offsetHeight) { elem.style.top = document.body.offsetHeight - 80 + 'px'; }
+					if (event.changedTouches[0].clientY <= 0) { elem.style.top = '20px' ;}
+
+					if (event.changedTouches[0].clientX > (document.body.offsetWidth / 2)) {
+						elem.style.right = '0'
+						elem.style.left = 'auto'
+					} else {
+						elem.style.left = '0'
+						elem.style.right = 'auto'
+					}
+					document.ontouchmove = null
+					document.ontouchend = null
+				}
+			}
+		}
+	</script>
+</body>
+</html>
